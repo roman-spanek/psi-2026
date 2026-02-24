@@ -10,4 +10,3 @@ class Functions {
         return a + b;
     }
 }
-
