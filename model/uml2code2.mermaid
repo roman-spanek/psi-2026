@@ -1,0 +1,14 @@
+classDiagram
+
+    class DiscountStrategy {
+        <<interface>>
+        +calculate(total: double): double
+    }
+
+    class NoDiscount
+    class PercentageDiscount
+
+    DiscountStrategy <|.. NoDiscount
+    DiscountStrategy <|.. PercentageDiscount
+
+    Order --> DiscountStrategy

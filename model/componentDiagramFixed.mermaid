@@ -1,0 +1,20 @@
+flowchart LR
+
+    Controller["REST Controller"]
+    AuthService["Authentication Service"]
+    UserService["User Service"]
+    PaymentService["Payment Service"]
+    EmailService["Email Service"]
+    JWTProvider["JWT Provider"]
+    ExternalPayment["External Payment Gateway"]
+    ExternalLogging["External Logging System"]
+
+    Controller --> AuthService
+    Controller --> UserService
+    Controller --> PaymentService
+
+    AuthService --> JWTProvider
+    UserService --> ExternalLogging
+    PaymentService --> ExternalPayment
+    PaymentService --> ExternalLogging
+    EmailService --> ExternalLogging

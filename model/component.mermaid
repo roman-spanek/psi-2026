@@ -1,0 +1,10 @@
+flowchart LR
+
+    Controller --> Service
+    Service --> ExternalClient
+    ExternalClient --> ExternalAPI
+
+    Controller["REST Controller"]
+    Service["Business Service"]
+    ExternalClient["REST Client"]
+    ExternalAPI["External Public API"]

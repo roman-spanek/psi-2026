@@ -1,0 +1,18 @@
+classDiagram
+
+    class NotificationService {
+        <<interface>>
+        +send(message: String)
+    }
+
+    class EmailNotification {
+        +send(message: String)
+    }
+
+    class OrderProcessor {
+        -notificationService: NotificationService
+        +process()
+    }
+
+    NotificationService <|.. EmailNotification
+    OrderProcessor --> NotificationService

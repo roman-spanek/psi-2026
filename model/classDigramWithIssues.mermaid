@@ -1,0 +1,34 @@
+classDiagram
+
+    class Customer {
+        +id: Long
+        +name: String
+        +orders: List<Order>
+    }
+
+    class Order {
+        +id: Long
+        +items: List<OrderItem>
+        +calculateTotal(): double
+    }
+
+    class OrderItem {
+        +quantity: int
+        +price: double
+    }
+
+    class Product {
+        +id: Long
+        +name: String
+        +price: double
+    }
+
+    class PaymentService {
+        -order: Order
+        +processPayment(): void
+    }
+
+    Customer --> Order
+    Order --> Product
+    Order --> OrderItem
+    PaymentService --> Customer

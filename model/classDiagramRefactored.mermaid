@@ -1,0 +1,34 @@
+classDiagram
+
+    class Customer {
+        -id: Long
+        -name: String
+        -orders: List<Order>
+    }
+
+    class Order {
+        -id: Long
+        -items: List<OrderItem>
+        +calculateTotal(): double
+    }
+
+    class OrderItem {
+        -quantity: int
+        -product: Product
+        +getSubtotal(): double
+    }
+
+    class Product {
+        -id: Long
+        -name: String
+        -price: double
+    }
+
+    class PaymentService {
+        +processPayment(order: Order): boolean
+    }
+
+    Customer "1" --> "*" Order
+    Order "1" *-- "*" OrderItem
+    OrderItem "*" --> "1" Product
+    PaymentService ..> Order
