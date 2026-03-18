@@ -1,0 +1,40 @@
+flowchart TD
+
+    A([Start]) --> B[Start processing order]
+
+    %% Validace
+    B --> C{amount <= 0?}
+    C -- ano --> D[Invalid order amount]
+    D --> Z([End])
+
+    C -- ne --> E{amount > 1000?}
+    E -- ano --> F[High value order]
+    E -- ne --> G[Standard order]
+
+    %% Fork
+    F --> H{{Fork}}
+    G --> H
+
+    %% Paralelní větev 1 – Payment
+    H --> P1[Processing payment]
+    P1 --> P2{amount > 500?}
+    P2 -- ano --> P3[Apply fraud check]
+    P2 -- ne --> P4[Skip fraud check]
+    P3 --> P5[Payment done]
+    P4 --> P5
+
+    %% Paralelní větev 2 – Shipping
+    H --> S1[Preparing shipping]
+    S1 --> S2{isPremiumCustomer?}
+    S2 -- ano --> S3[Express shipping]
+    S2 -- ne --> S4[Standard shipping]
+    S3 --> S5[Shipping ready]
+    S4 --> S5
+
+    %% Join
+    P5 --> J{{Join}}
+    S5 --> J
+
+    %% Konec
+    J --> K[Order completed]
+    K --> Z([End])
