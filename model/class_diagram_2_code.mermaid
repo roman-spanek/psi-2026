@@ -1,0 +1,64 @@
+classDiagram
+    class Transport {
+        <<abstract>>
+        -int id
+        -double distance
+        +calculatePrice(Customer customer) double
+    }
+
+    class Bus {
+        -int numberOfStops
+        +calculatePrice(Customer customer) double
+    }
+
+    class Train {
+        -boolean firstClass
+        +calculatePrice(Customer customer) double
+    }
+
+    class Taxi {
+        -double startFee
+        +calculatePrice(Customer customer) double
+    }
+
+    class Customer {
+        <<abstract>>
+        +getDiscount() double
+    }
+
+    class RegularCustomer {
+        +getDiscount() double
+    }
+
+    class Student {
+        +getDiscount() double
+    }
+
+    class Senior {
+        +getDiscount() double
+    }
+
+    class Reservation {
+        -Transport transport
+        -Customer customer
+        +getFinalPrice() double
+    }
+
+    Transport <|-- Bus
+    Transport <|-- Train
+    Transport <|-- Taxi
+
+    Customer <|-- RegularCustomer
+    Customer <|-- Student
+    Customer <|-- Senior
+
+    Reservation --> Transport
+    Reservation --> Customer
+
+    note for Bus "Cena se vypočítává na základě počtu zastávek."
+    note for Train "Cena se vypočítává na základě třídy (1. nebo 2.)."
+    note for Taxi "Cena se vypočítává na základě startovného a ujeté vzdálenosti."
+    note for Student "Studenti mají nárok na slevu 0.2"
+    note for Senior "Senioři mají nárok na slevu 0.3"
+    note for RegularCustomer "Regularní zákazníci nemají nárok na slevu."
+    note for Reservation "price = basePrice * (1 - customer.getDiscount());"

@@ -1,0 +1,27 @@
+flowchart TD
+    A[Start] --> B[Zadej typ dopravy]
+    B --> C[Zadej vzdálenost]
+
+    C --> D{Typ zákazníka?}
+
+    D -->|Student| E[Použij Student discount]
+    D -->|Senior| F[Použij Senior discount]
+    D -->|Regular| G[Bez slevy]
+
+    E --> H[Vytvoř Customer objekt]
+    F --> H
+    G --> H
+
+    H --> I{Typ dopravy?}
+
+    I -->|Bus| J[Vytvoř Bus]
+    I -->|Train| K[Vytvoř Train]
+    I -->|Taxi| L[Vytvoř Taxi]
+
+    J --> M[Vytvoř Reservation]
+    K --> M
+    L --> M
+
+    M --> N[Zavolej calculatePrice]
+N --> O[Zobraz cenu]
+O --> P[Konec]
