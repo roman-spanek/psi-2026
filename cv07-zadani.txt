@@ -1,0 +1,223 @@
+Zadani cviceni 07 - logovani
+
+1. Popis úkolu
+
+Máte následující třídy, které simulují jednoduchý PaymentService a OrderService. Současné logování je nedostatečné:
+
+žádné log levels
+chybí informace o kontextu
+výjimky se nelogují správně
+není možné sledovat tracebility (kdo volal co)
+
+Vaším úkolem je:
+
+Najít, kde logování selhává nebo je neúplné
+Přidat SLF4J logování
+Použít správné log levels (DEBUG, INFO, WARN, ERROR)
+Přidat logování výjimek
+Přidat možnost tracebility (correlation ID)
+Logovat vstupy a výstupy metod
+
+package com.example.payment;
+
+import java.util.Random;
+
+public class PaymentService {
+
+    public boolean processPayment(String userId, double amount) {
+        // špatné logování: pouze tisk na konzoli
+        System.out.println("Processing payment");
+
+        if (amount <= 0) {
+            System.out.println("Amount invalid");
+            return false;
+        }
+
+        // simulace náhodné chyby
+        if (new Random().nextBoolean()) {
+            throw new RuntimeException("Random payment failure");
+        }
+
+        System.out.println("Payment done for user " + userId);
+        return true;
+    }
+}
+
+
+package com.example.payment;
+
+public class OrderService {
+
+    private final PaymentService paymentService = new PaymentService();
+
+    public void placeOrder(String userId, double amount) {
+        System.out.println("Placing order for user " + userId);
+
+        boolean paid = paymentService.processPayment(userId, amount);
+
+        if (!paid) {
+            System.out.println("Payment failed for user " + userId);
+        } else {
+            System.out.println("Order completed for user " + userId);
+        }
+    }
+}
+
+
+package com.example.payment;
+
+public class Main {
+    public static void main(String[] args) {
+        OrderService orderService = new OrderService();
+
+        orderService.placeOrder("user123", 100);
+        orderService.placeOrder("user456", -50);
+        orderService.placeOrder("user789", 200);
+    }
+}
+
+2. Cvičení: “Najdi a oprav špatné logování”
+Popis úkolu
+
+Máte připravený kód, který simuluje objednávkový systém s platbami, ale obsahuje několik chyb logování.
+
+Vaším cílem je:
+
+Identifikovat anti-patterny (špatné praktiky logování)
+Opravit je, aby bylo možné sledovat tok programu, výjimky a parametry metod
+Použít SLF4J, log levels, traceability a logování vstupů/výstupů
+
+
+package com.example.payment;
+
+import java.util.Random;
+
+public class PaymentService {
+
+    public boolean processPayment(String userId, double amount) {
+        // špatné logování
+        System.out.println("Processing payment");
+
+        if (amount <= 0) {
+            System.out.println("Amount invalid"); 
+            return false;
+        }
+
+        if (new Random().nextBoolean()) {
+            throw new RuntimeException("Random payment failure"); 
+        }
+
+        System.out.println("Payment done for user " + userId); 
+        return true;
+    }
+}
+
+
+package com.example.payment;
+
+public class OrderService {
+
+    private final PaymentService paymentService = new PaymentService();
+
+    public void placeOrder(String userId, double amount) {
+        System.out.println("Placing order for user " + userId); 
+
+        boolean paid = paymentService.processPayment(userId, amount);
+
+        if (!paid) {
+            System.out.println("Payment failed for user " + userId); 
+        } else {
+            System.out.println("Order completed for user " + userId); 
+        }
+    }
+}
+
+package com.example.payment;
+
+public class Main {
+    public static void main(String[] args) {
+        OrderService orderService = new OrderService();
+
+        orderService.placeOrder("user123", 100);
+        orderService.placeOrder("user456", -50);
+        orderService.placeOrder("user789", 200);
+    }
+}
+
+
+3. Zadání cvičení: “Vícevláknové objednávky s correlation ID”
+Popis
+
+Máte OrderService, který zpracovává objednávky. Některé operace se spouští asynchronně ve vlastních vláknech (např. volání externí služby nebo platba).
+
+Současné logování nezachovává correlation ID mezi vlákny, takže logy se nedají spojit s konkrétním requestem.
+
+Vaším úkolem je:
+
+Simulovat více vlákna pro každou objednávku
+Zajistit, aby correlation ID bylo správně předáno do všech vláken
+Logovat všechny kroky s log levels a correlation ID
+Ukázat, že traceability funguje i při paralelním zpracování
+
+package com.example.payment;
+
+import java.util.Random;
+
+public class PaymentService {
+
+    private final Random random = new Random();
+
+    public boolean processPayment(String userId, double amount) {
+        // correlation ID není předáno, logování chybí
+        System.out.println("Processing payment for user " + userId);
+
+        if (amount <= 0) {
+            System.out.println("Amount invalid");
+            return false;
+        }
+
+        if (random.nextBoolean()) {
+            throw new RuntimeException("Random payment failure");
+        }
+
+        System.out.println("Payment done for user " + userId);
+        return true;
+    }
+}
+
+package com.example.payment;
+
+import java.util.UUID;
+
+public class OrderService {
+
+    private final PaymentService paymentService = new PaymentService();
+
+    public void placeOrder(String userId, double amount) {
+        String correlationId = UUID.randomUUID().toString();
+
+        // Spustíme asynchronně
+        new Thread(() -> {
+            System.out.println("Placing order for user " + userId + " with correlationId " + correlationId);
+            boolean paid = paymentService.processPayment(userId, amount);
+
+            if (paid) {
+                System.out.println("Order completed for user " + userId);
+            } else {
+                System.out.println("Order failed for user " + userId);
+            }
+        }).start();
+    }
+}
+
+package com.example.payment;
+
+public class Main {
+    public static void main(String[] args) {
+        OrderService orderService = new OrderService();
+
+        orderService.placeOrder("user123", 100);
+        orderService.placeOrder("user456", -50);
+        orderService.placeOrder("user789", 200);
+    }
+}
