@@ -25,7 +25,6 @@ import java.util.Random;
 public class PaymentService {
 
     public boolean processPayment(String userId, double amount) {
-        // špatné logování: pouze tisk na konzoli
         System.out.println("Processing payment");
 
         if (amount <= 0) {
@@ -33,7 +32,6 @@ public class PaymentService {
             return false;
         }
 
-        // simulace náhodné chyby
         if (new Random().nextBoolean()) {
             throw new RuntimeException("Random payment failure");
         }
@@ -168,7 +166,6 @@ public class PaymentService {
     private final Random random = new Random();
 
     public boolean processPayment(String userId, double amount) {
-        // correlation ID není předáno, logování chybí
         System.out.println("Processing payment for user " + userId);
 
         if (amount <= 0) {
