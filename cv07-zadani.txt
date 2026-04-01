@@ -93,7 +93,6 @@ import java.util.Random;
 public class PaymentService {
 
     public boolean processPayment(String userId, double amount) {
-        // špatné logování
         System.out.println("Processing payment");
 
         if (amount <= 0) {
