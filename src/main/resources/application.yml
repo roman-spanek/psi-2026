@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/appdb
+    username: app
+    password: app
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: demo-orders
+      auto-offset-reset: earliest
+    producer:
+      properties:
+        acks: all
+        enable.idempotence: true
+  sql:
+    init:
+      mode: always
+logging:
+  level:
+    org.hibernate.SQL: debug
